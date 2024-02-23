@@ -123,7 +123,8 @@ async function updateSubscription(req, res, next) {
   }
 
   const { subscription } = req.body;
-  const { id } = req.user;
+  const { id } = req.user || {};
+
   console.log(req.user);
 
   try {
