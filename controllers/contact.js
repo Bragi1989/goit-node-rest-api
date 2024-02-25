@@ -53,7 +53,7 @@ async function getContact(req, res, next) {
 
     console.log(contact);
 
-    if (contact) {
+    if (contact === null) {
       return res.status(404).json({ message: "Not found" });
     }
     if (contact.ownerId.toString() !== userId) {
