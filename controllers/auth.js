@@ -152,13 +152,19 @@ async function updateSubscription(req, res, next) {
 async function updateAvatar(req, res, next) {
   const { id } = req.user;
 
+  // Перевірка, чи файл був надісланий користувачем
+  if (!req.file) {
+    return res.status(400).json({ message: 'Файл не був надісланий.' });
+  }
+
   try {
     // Отримання шляху до завантаженого файлу та нового шляху для збереження
     const originalPath = req.file.path;
     const newPath = path.join(
       __dirname,
       "..",
-      "public/avatars",
+      "public",
+      "avatars",
       req.file.filename
     );
 
@@ -171,16 +177,19 @@ async function updateAvatar(req, res, next) {
 
     const avatarURL = path.join("avatars", req.file.filename);
 
-    // Оновлення посилання на аватар користувача в базі даних
+  
     await User.findByIdAndUpdate(id, { avatarURL }, { new: true });
 
+    // Відправка відповіді з посиланням на новий аватар
     res.status(200).json({
       avatarURL: avatarURL,
     });
   } catch (error) {
+    // Передача помилки до middleware обробника помилок (next)
     next(error);
   }
 }
+
 module.exports = {
   register,
   login,
